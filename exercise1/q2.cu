@@ -1,0 +1,46 @@
+#include <iostream>
+#include <cuda.h>
+
+__device__ int blockCounter = 0;
+
+__global__ void kernel(int totalBlocks)
+{
+    // Except the thread 0 all threads in block do not execute this block
+    if (threadIdx.x == 0)
+    {
+        atomicAdd(&blockCounter, 1);
+    }
+
+    __syncthreads();
+
+    // Wait till blockCounter reaches the totalBlocks
+    while (atomicAdd(&blockCounter,0) != totalBlocks){}
+
+    __syncthreads();
+}
+
+int main()
+{
+    int totalBlocks = 32;
+    int threadPerBlock = 1024;
+
+    kernel<<<totalBlocks, threadPerBlock>>>(totalBlocks);
+
+    cudaDeviceSynchronize();
+
+    cudaError_t error = cudaGetLastError();
+
+    if (error != cudaSuccess)
+    {
+        std::cerr << "CUDA Error: " << cudaGetErrorString(error) << std::endl;
+        return 1;
+    }
+
+    int hBlockCounter;
+
+    cudaMemcpyFromSymbol(&hBlockCounter, &blockCounter, sizeof(int), 0, cudaMemcpyDeviceToHost);
+
+    std::cout << "Block Counter value: " << hBlockCounter << std::endl;
+
+    return 0;
+}
