@@ -3,6 +3,14 @@
 
 __device__ int blockCounter = 0;
 
+/**
+ * @brief A barrier for all threads of a CUDA kernel
+ *        if the number of blocks <= Number of SMs
+ *        else there would be a deadlock
+ * 
+ * @param totalBlocks 
+ * 
+ */
 __global__ void kernel(int totalBlocks)
 {
     // Except the thread 0 all threads in block do not execute this block
