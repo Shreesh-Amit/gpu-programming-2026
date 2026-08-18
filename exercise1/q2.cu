@@ -8,6 +8,8 @@ __device__ int blockCounter = 0;
  *        if the number of blocks <= Number of SMs
  *        else there would be a deadlock
  * 
+ * @note A warp can be pre-empted but a block cannot be pre-empted in CUDA
+ * 
  * @param totalBlocks 
  * 
  */
