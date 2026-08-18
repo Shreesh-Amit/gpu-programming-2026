@@ -9,6 +9,9 @@ __device__ int blockCounter = 0;
  *        else there would be a deadlock
  * 
  * @note A warp can be pre-empted but a block cannot be pre-empted in CUDA
+ *       If multiple blocks can fit in a SM then it is possible for grid-wise sync
+ *       using __syncthreads() and atomic operations. It all depends on the amount 
+ *       of resources available on the SM
  * 
  * @param totalBlocks 
  * 
