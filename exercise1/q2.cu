@@ -7,14 +7,14 @@ __device__ int blockCounter = 0;
  * @brief A barrier for all threads of a CUDA kernel
  *        if the number of blocks <= Number of SMs
  *        else there would be a deadlock
- * 
+ *
  * @note A warp can be pre-empted but a block cannot be pre-empted in CUDA
  *       If multiple blocks can fit in a SM then it is possible for grid-wise sync
- *       using __syncthreads() and atomic operations. It all depends on the amount 
+ *       using __syncthreads() and atomic operations. It all depends on the amount
  *       of resources available on the SM
- * 
- * @param totalBlocks 
- * 
+ *
+ * @param totalBlocks
+ *
  */
 __global__ void kernel(int totalBlocks)
 {
@@ -27,7 +27,9 @@ __global__ void kernel(int totalBlocks)
     __syncthreads();
 
     // Wait till blockCounter reaches the totalBlocks
-    while (atomicAdd(&blockCounter,0) != totalBlocks){}
+    while (atomicAdd(&blockCounter, 0) != totalBlocks)
+    {
+    }
 
     __syncthreads();
 }
